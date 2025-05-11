@@ -70,22 +70,37 @@ const app = express();
 
 ////------------------middlewares---------usecase of using middlewares------------//
 // this middleware is used to check if the user is an admin
-app.use("/admin", admin_auth);
 
-app.get("/admin/getuserdata", (req, res) => {
-  res.send("get user data");
-});
-app.get("/admin/deleteuserdata", (req, res) => {
-  res.send("deleted user data");
+// app.use("/admin", admin_auth);
+
+// app.get("/admin/getuserdata", (req, res) => {
+//   res.send("get user data");
+// });
+// app.get("/admin/deleteuserdata", (req, res) => {
+//   res.send("deleted user data");
+// });
+
+// //this is another way of calling the middleware --before the route handler--to authenticate the user
+// app.use("/user", user_auth, (req, res) => {
+//   res.send("get user data");
+// });
+
+// app.get("/login", (req, res) => {
+//   res.send("logged in successfully !!!");
+// });
+
+// ------------------error handling ------------------//
+
+app.get("/getuserdata", (req, res) => {
+  throw new Error("Error in getuserdata");
+  res.send("Welcome to the homepage!");
 });
 
-//this is another way of calling the middleware --before the route handler--to authenticate the user
-app.use("/user", user_auth, (req, res) => {
-  res.send("get user data");
-});
-
-app.get("/login", (req, res) => {
-  res.send("logged in successfully !!!");
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    console.error("Error handling middleware:", err);
+    res.status(500).send("Internal server error");
+  }
 });
 
 app.listen(7777, () => {
