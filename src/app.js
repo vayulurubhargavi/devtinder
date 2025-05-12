@@ -1,6 +1,6 @@
 const express = require("express");
-const { admin_auth, user_auth } = require("./middlewares/auth");
-
+// const { admin_auth, user_auth } = require("./middlewares/auth");
+const connectDB = require("./config/database");
 const app = express();
 
 //----------api routes and rest api------------------
@@ -89,20 +89,27 @@ const app = express();
 //   res.send("logged in successfully !!!");
 // });
 
-// ------------------error handling ------------------//
+// // ------------------error handling ------------------//
 
-app.get("/getuserdata", (req, res) => {
-  throw new Error("Error in getuserdata");
-  res.send("Welcome to the homepage!");
-});
+// app.get("/getuserdata", (req, res) => {
+//   throw new Error("Error in getuserdata");
+//   res.send("Welcome to the homepage!");
+// });
 
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    console.error("Error handling middleware:", err);
-    res.status(500).send("Internal server error");
-  }
-});
+// app.use("/", (err, req, res, next) => {
+//   if (err) {
+//     console.error("Error handling middleware:", err);
+//     res.status(500).send("Internal server error");
+//   }
+// });
 
-app.listen(7777, () => {
-  console.log("Server is running on port 7777");
-});
+connectDB()
+  .then(() => {
+    console.log("MongoDB connected successfully");
+    app.listen(7777, () => {
+      console.log("Server is running on port 7777");
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
