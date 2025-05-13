@@ -1,107 +1,43 @@
 const express = require("express");
-// const { admin_auth, user_auth } = require("./middlewares/auth");
+
 const connectDB = require("./config/database");
 const app = express();
+const User = require("./models/user");
 
-//----------api routes and rest api------------------
-// app.get("/", (req, res) => {
-//   res.send("namaste World!");
-// });
+// Middleware to parse JSON request bodies
+app.use(express.json());
 
-// app.use("/hello/xyz", (req, res) => {
-//   res.send("hello hello xyz!.....");
-// });
+app.post("/signup", async (req, res) => {
+  // const userObj = {
+  //   firstName: "sachin",
+  //   lastName: "tendulkar",
+  //   email: "sachin@gmail.com",
+  //   password: "vay124",
+  //   age: 65,
+  // };
+  // // create a new user instance to a model
+  // const newUser = new User(userObj);
+  // // save the user to the database
+  // try {
+  //   await newUser.save(); //this saves the user to the database and returns a promise
+  //   res.send("User created successfully");
+  // } catch (err) {
+  //   console.error("Error creating user:", err);
+  //   res.status(400).send("Error creating user");
+  // }
 
-// app.get("/user/:userid/:name/:password", (req, res) => {
-//   console.log(req.params,'===> req.params');
-//   res.send({ firstname: "Akshay", lastname: "kumar", age: "35" });
-// });
-
-// app.post("/user", (req, res) => {
-//   //saving data to db
-//   res.send("Data saved to DB successfully!");
-// });
-
-// app.delete("/user", (req, res) => {
-//   res.send("Data deleted from DB successfully!");
-// });
-// app.use("/hello", (req, res) => {
-//   res.send("hello hello heelloo!.....");
-// });
-
-// app.use("/test", (req, res) => {
-//   res.send("teszt server !.....");
-// });
-
-// app.use("/dashboard", (req, res) => {
-//   res.send("this is dashboard!.....");
-
-// });
-
-// --------------------------- middleware and req. handlers---------------------//
-// ///1. all the req-res call back functions are called as middlewares
-// ///2. middlewares are functions that have access to the request object (req), the response object (res), and the next middleware function in the application’s request-response cycle.
-// ///3. the middlware that usually send the response to the client is called as route handler
-// /// ex: get /users=>middlewares=> route handler
-// app.use("/", (req, res, next) => {
-//   console.log("handling / route");
-//   // res.send("hello world");
-//   next();
-// });
-
-// app.get(
-//   "/user",
-//   (req, res, next) => {
-//     console.log("route handler function 1");
-
-//     next();
-//     // res.send("route handler 1......");
-//   },
-//   (req, res, next) => {
-//     console.log("route handler function 2");
-//     //  res.send("route handler 2......");
-//     next();
-//   },
-//   (req, res) => {
-//     console.log("route handler function 3");
-//     res.send("route handler 3......");
-//   }
-// );
-
-////------------------middlewares---------usecase of using middlewares------------//
-// this middleware is used to check if the user is an admin
-
-// app.use("/admin", admin_auth);
-
-// app.get("/admin/getuserdata", (req, res) => {
-//   res.send("get user data");
-// });
-// app.get("/admin/deleteuserdata", (req, res) => {
-//   res.send("deleted user data");
-// });
-
-// //this is another way of calling the middleware --before the route handler--to authenticate the user
-// app.use("/user", user_auth, (req, res) => {
-//   res.send("get user data");
-// });
-
-// app.get("/login", (req, res) => {
-//   res.send("logged in successfully !!!");
-// });
-
-// // ------------------error handling ------------------//
-
-// app.get("/getuserdata", (req, res) => {
-//   throw new Error("Error in getuserdata");
-//   res.send("Welcome to the homepage!");
-// });
-
-// app.use("/", (err, req, res, next) => {
-//   if (err) {
-//     console.error("Error handling middleware:", err);
-//     res.status(500).send("Internal server error");
-//   }
-// });
+  // read the data from the request body
+  console.log(req.body);
+  const new_user = new User(req.body);
+  // save the user to the database
+  try {
+    await new_user.save(); //this saves the user to the database and returns a promise
+    res.send("User created successfully");
+  } catch (err) {
+    console.error("Error creating user:", err);
+    res.status(400).send("Error creating user");
+  }
+});
 
 connectDB()
   .then(() => {
