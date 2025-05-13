@@ -7,6 +7,54 @@ const User = require("./models/user");
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
+// GET the user by email
+app.get("/user", async (req, res) => {
+  const user_email = req.body.email;
+  // whenever we want to get the data from the database, we need to use aysnc-await
+  try {
+    const user = await User.findOne({ email: user_email }); //finds only one user
+    // const user = await User.find({ email: user_email });//finds all users
+    if (!user) {
+      res.status(404).send("User not found");
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
+// GET the user by _id--using findById
+app.get("/userById", async (req, res) => {
+  const id = req.body._id;
+  // whenever we want to get the data from the database, we need to use aysnc-await
+  try {
+    const user = await User.findById({ _id: id }); //finds user by id
+
+    if (!id) {
+      res.status(404).send("User not found");
+    } else {
+      res.send(user);
+    }
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
+//GET -/feed api-finds all the user
+app.get("/feed", async (req, res) => {
+  try {
+    const users = await User.find();
+    if (!users) {
+      res.status(404).send("No users found");
+    } else {
+      res.send(users);
+    }
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
 app.post("/signup", async (req, res) => {
   // const userObj = {
   //   firstName: "sachin",
