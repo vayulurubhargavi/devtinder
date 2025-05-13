@@ -87,6 +87,32 @@ app.post("/signup", async (req, res) => {
   }
 });
 
+// delete the partciular user by id
+app.delete("/user", async (req, res) => {
+  try {
+    const userid = req.body.userid;
+    // console.log(userid);
+    await User.findByIdAndDelete(userid);
+    // await User.findByIdAndDelete({_id:userid});--both are same
+    res.send("User deleted successfully");
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
+// update the user document
+app.patch("/user", async (req, res) => {
+  const userid = req.body.userid;
+  const data = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(userid, data);
+    console.log(user);
+    res.send("User updated successfully");
+  } catch (err) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
 connectDB()
   .then(() => {
     console.log("MongoDB connected successfully");
