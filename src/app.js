@@ -83,7 +83,7 @@ app.post("/signup", async (req, res) => {
     res.send("User created successfully");
   } catch (err) {
     console.error("Error creating user:", err);
-    res.status(400).send("Error creating user");
+    res.status(400).send("Error creating user" + err);
   }
 });
 
@@ -96,7 +96,7 @@ app.delete("/user", async (req, res) => {
     // await User.findByIdAndDelete({_id:userid});--both are same
     res.send("User deleted successfully");
   } catch (err) {
-    res.status(400).send("Something went wrong");
+    res.status(400).send("Something went wrong"+err);
   }
 });
 
@@ -109,7 +109,7 @@ app.patch("/user", async (req, res) => {
     console.log(user);
     res.send("User updated successfully");
   } catch (err) {
-    res.status(400).send("Something went wrong");
+    res.status(400).send("Something went wrong" + err);
   }
 });
 
