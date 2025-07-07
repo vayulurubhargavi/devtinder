@@ -1,25 +1,30 @@
-// this middleware is used to check if the user is an admin
-const admin_auth = (req, res, next) => {
-  const admintoken = "xyz";
-  const authorization_token = "xyz";
-  if (admintoken !== authorization_token) {
-    res.status(401).send("Unauthorized access");
-  } else {
-    next();
-  }
-};
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
-const user_auth = (req, res, next) => {
-  const usertoken = "xyz";
-  const authorization_token = "xyz";
-  if (usertoken !== authorization_token) {
-    res.status(401).send("Unauthorized access");
-  } else {
-    next();
+const user_auth = async(req, res, next) => {
+  try{
+    const cookies=req.cookies;
+    const { token } = cookies;
+    // validate the token
+    if (!token) {
+      throw new Error("No token found, please login");
+    }
+    const decodedMessage = await jwt.verify(token, "Dev@Tinder123");
+    const { _id } = decodedMessage;
+    // find the user by id
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    req.user = user; // attach user to request object
+   
+    next(); // call next middleware or route handler
+  }catch(err){
+    res.status(400).send("ERROR: " + err.message);
   }
 };
 
 module.exports = {
-  admin_auth,
-  user_auth,
+
+  user_auth
 };
