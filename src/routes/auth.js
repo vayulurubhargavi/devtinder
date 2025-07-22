@@ -1,10 +1,9 @@
-const express=require('express');
-const authRouter=express.Router();
-const bcrypt=require("bcrypt");
+const express = require("express");
+const authRouter = express.Router();
+const bcrypt = require("bcrypt");
 
 const { validateUserSignUpData } = require("../utils/validation");
 const User = require("../models/user");
-
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -51,7 +50,7 @@ authRouter.post("/login", async (req, res) => {
         secure: true,
         expires: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000), // cookie will be removed after 8 days
       });
-      res.send("Login successful");
+      res.send(findUser);
     } else {
       throw new Error("Invalid Credentials");
     }
@@ -60,10 +59,9 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
-
 authRouter.post("/logout", (req, res) => {
   res.cookie("token", null, { expires: new Date(Date.now()) });
   res.send("Logout successful");
 });
 
-module.exports=authRouter;
+module.exports = authRouter;

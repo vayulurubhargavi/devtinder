@@ -52,7 +52,7 @@ requestRouter.post("/request/review/:status/:requestId",user_auth,async (req,res
       return res.status(400).json({message:"Invalid Status" + status});
     }
 
-    console.log(requestId, loggedInUser._id);
+    // console.log(requestId, loggedInUser._id);
     
     const connectionRequest = await ConnectionRequest.findOne({
       _id: requestId,
