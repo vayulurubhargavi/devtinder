@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 
-const user_auth = async(req, res, next) => {
-  try{
-    const cookies=req.cookies;
+const user_auth = async (req, res, next) => {
+  try {
+    const cookies = req.cookies;
     const { token } = cookies;
     // validate the token
     if (!token) {
-      throw new Error("No token found, please login");
+      res.status(401).send("Unauthorized :Please Login again");
     }
     const decodedMessage = await jwt.verify(token, "Dev@Tinder123");
     const { _id } = decodedMessage;
@@ -17,14 +17,13 @@ const user_auth = async(req, res, next) => {
       throw new Error("User not found");
     }
     req.user = user; // attach user to request object
-   
+
     next(); // call next middleware or route handler
-  }catch(err){
+  } catch (err) {
     res.status(400).send("ERROR: " + err.message);
   }
 };
 
 module.exports = {
-
-  user_auth
+  user_auth,
 };
