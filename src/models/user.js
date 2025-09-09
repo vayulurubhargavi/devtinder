@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
-const bcrypt=require("bcrypt");
+const bcrypt = require("bcrypt");
 // Define the user schema
 const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
       required: true,
-      minlength:4,
+      minlength: 4,
       maxlength: 20,
     },
     lastName: {
@@ -37,6 +37,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       min: 18,
     },
+    about: {
+      type: String,
+    },
     gender: {
       type: String,
       validate(value) {
@@ -64,26 +67,24 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-
-userSchema.methods.getJWTToken=async function () {
-  const user=this;
+userSchema.methods.getJWTToken = async function () {
+  const user = this;
   const jwtToken = await jwt.sign({ _id: user._id }, "Dev@Tinder123", {
     expiresIn: "1d",
   });
 
-  return jwtToken; 
+  return jwtToken;
 };
 
-userSchema.methods.validatePassword=async function(passwordInputByUser){
-  const user=this;
-  const passwordHash=user.password;
- const isPasswordMatched = await bcrypt.compare(
-   passwordInputByUser,
-   passwordHash
- );
- return isPasswordMatched;
-
-}
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
+  const user = this;
+  const passwordHash = user.password;
+  const isPasswordMatched = await bcrypt.compare(
+    passwordInputByUser,
+    passwordHash
+  );
+  return isPasswordMatched;
+};
 // Create the user model
 const User = mongoose.model("User", userSchema);
 // Export the user model

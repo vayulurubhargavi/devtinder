@@ -13,7 +13,10 @@ userRouter.get("/user/requests/received", user_auth, async (req, res) => {
         toUserId: loggedInUser._id,
         status: "interested",
       })
-      .populate("fromUserId", "firstName lastName email photourl");
+      .populate(
+        "fromUserId",
+        "firstName lastName email photourl about age gender"
+      );
 
     res.json({
       message: "Connection requests ...",
@@ -34,8 +37,14 @@ userRouter.get("/user/connections", user_auth, async (req, res) => {
           { toUserId: loggedInUser._id, status: "accepted" },
         ],
       })
-      .populate("fromUserId", "firstName lastName email photourl")
-      .populate("toUserId", "firstName lastName email photourl");
+      .populate(
+        "fromUserId",
+        "firstName lastName email photourl about age gender"
+      )
+      .populate(
+        "toUserId",
+        "firstName lastName email photourl about age gender"
+      );
     // console.log(connections);
     const data = connections.map((row) => {
       if (row.fromUserId._id.toString() === loggedInUser._id.toString()) {
@@ -63,13 +72,13 @@ userRouter.get("/user/feed", user_auth, async (req, res) => {
       })
       .select("fromUserId toUserId");
 
-    // console.log(connectionRequests);
+    console.log(connectionRequests);
     const hideUserFeed = new Set();
     connectionRequests.forEach((req) => {
       hideUserFeed.add(req.fromUserId.toString());
       hideUserFeed.add(req.toUserId.toString());
     });
-    // console.log("Hide User Feed: ", hideUserFeed);
+     console.log("Hide User Feed: ", hideUserFeed);
     const users = await User.find({
       $and: [
         { _id: { $nin: Array.from(hideUserFeed) } },
@@ -78,6 +87,7 @@ userRouter.get("/user/feed", user_auth, async (req, res) => {
     })
       .skip(skip)
       .limit(limit);
+      console.log(users);
     res.send({ data: users });
   } catch (err) {
     res.status(400).send("ERROR: " + err.message);
